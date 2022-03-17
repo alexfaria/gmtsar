@@ -706,15 +706,20 @@ class SBAS:
     def intf_parallel(self, pairs, **kwargs):
         import pandas as pd
         #from tqdm import tqdm
-        from tqdm import notebook
-        import joblib
+        # from tqdm import notebook
+        # import joblib
         import os
 
         if isinstance(pairs, pd.DataFrame):
             pairs = pairs.values
 
-        with self.tqdm_joblib(notebook.tqdm(desc="Interferograms", total=len(pairs))) as progress_bar:
-            joblib.Parallel(n_jobs=-1)(joblib.delayed(self.intf)(pair, **kwargs) for pair in pairs)
+        # with self.tqdm_joblib(notebook.tqdm(desc="Interferograms", total=len(pairs))) as progress_bar:
+        #     joblib.Parallel(n_jobs=-1)(joblib.delayed(self.intf)(pair, **kwargs) for pair in pairs)
+
+        pairs_count = len(pairs)
+        for index, pair in enumerate(pairs):
+            print(f'{index} of {pairs_count}', )
+            self.intf(pair, **kwargs)
 
         # build radar coordinates transformation matrix
         self.intf_ra2ll_matrix(self.open_grids(pairs, 'phasefilt'))
